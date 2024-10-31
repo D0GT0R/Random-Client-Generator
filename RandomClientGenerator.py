@@ -1,15 +1,15 @@
-import random_address
+import time
 import xlsxwriter
+import xlrd
 import names
-import json
+import random
 from datetime import date
 
-
+workbook = xlrd.open_workbook('AddressData.xls')
+sheet = workbook.sheet_by_name('Sheet1')
 
 inp = input('How many clients are needed?\n')
 clientCount = int(inp)
-
-print(inp + ' clients are needed.')
 
 today = date.today()
 
@@ -24,38 +24,36 @@ col = 0
 worksheet.write(row, col, 'First Name')
 worksheet.write(row, col + 1, 'Last Name')
 worksheet.write(row, col + 2, 'Address 1')
-worksheet.write(row, col + 3, 'Address 2')
-worksheet.write(row, col + 4, 'City')
-worksheet.write(row, col + 5, 'State')
-worksheet.write(row, col + 6, 'Zipcode')
+worksheet.write(row, col + 3, 'City')
+worksheet.write(row, col + 4, 'State')
+worksheet.write(row, col + 5, 'Zipcode')
 
 row = 1
 
 for x in range(clientCount):
+
+    randRow = random.randint(1, 820)
+    selectRow = int(randRow)
+
     iterationValue = (x + 1)
-    d1 = random_address.real_random_address_by_state('GA')
-    s1 = json.dumps(d1)
-    d2 = json.loads(s1)
+    
+    add1 = sheet.cell(selectRow, 0).value
+    city = sheet.cell(selectRow, 1).value
+    zipCode = sheet.cell(selectRow, 2).value
+    state = sheet.cell(selectRow, 3).value
 
     clientFirst = names.get_first_name()
     clientLast = names.get_last_name()
 
-    add1 = d2["address1"]
-    add2 = d2["address2"]
-    city = d2["city"]
-    state = d2["state"]
-    zipCode = d2["postalCode"]
-
     worksheet.write(row, col, clientFirst)
     worksheet.write(row, col + 1, clientLast)
     worksheet.write(row, col + 2, add1)
-    worksheet.write(row, col + 3, add2)
-    worksheet.write(row, col + 4, city)
+    worksheet.write(row, col + 3, city)
+    worksheet.write(row, col + 4, zipCode)
     worksheet.write(row, col + 5, state)
-    worksheet.write(row, col + 6, zipCode)
 
     row += 1
 
-print('The list has been genrated')
+print('The list has been genrated with ' + inp + ' clients.')
 
 workbook.close()
