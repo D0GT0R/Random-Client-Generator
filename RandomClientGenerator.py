@@ -1,23 +1,32 @@
-import time
+import re
 import xlsxwriter
 import xlrd
 import names
 import random
 from datetime import date
 
+def sanitize_input(input_str):
+    sanitized_str = re.sub(r'<script\b[^>]*>(.*?)</script>', '', input_str, flags=re.IGNORECASE)
+    return sanitized_str
+
 workbook = xlrd.open_workbook('AddressData.xls')
 sheet = workbook.sheet_by_name('Sheet1')
 
-inp = input('How many clients are needed?\n')
-clientCount = int(inp)
+clientCountInput = input('How many clients are needed?\n')
 
-inp2 = input('User requesting clients:\n')
+clientCount = sanitize_input(clientCountInput)
+
+clientCountInt = int(clientCount)
+
+userNameInput = input('User requesting clients:\n')
+
+userName = sanitize_input(userNameInput)
 
 today = date.today()
 
 todaysDate = today.strftime("%b-%d-%y")
 
-workbook1 = xlsxwriter.Workbook(inp2 + ' Clients ' + todaysDate + '.xlsx')
+workbook1 = xlsxwriter.Workbook(userName + ' Clients ' + todaysDate + '.xlsx')
 worksheet = workbook1.add_worksheet()
 
 row = 0
@@ -27,14 +36,14 @@ worksheet.set_column(0, 5, 25)
 
 worksheet.write(row, col, 'First Name')
 worksheet.write(row, col + 1, 'Last Name')
-worksheet.write(row, col + 2, 'Address 1')
+worksheet.write(row, col + 2, 'Address')
 worksheet.write(row, col + 3, 'City')
 worksheet.write(row, col + 4, 'Zip Code')
 worksheet.write(row, col + 5, 'State')
 
 row = 1
 
-for x in range(clientCount):
+for x in range(clientCountInt):
 
     randRow = random.randint(1, 2480)
     selectRow = int(randRow)
@@ -59,6 +68,6 @@ for x in range(clientCount):
 
     row += 1
 
-print('The list has been genrated with ' + inp + ' clients.')
+print('The list has been genrated with ' + clientCount + ' clients.')
 
 workbook1.close()
