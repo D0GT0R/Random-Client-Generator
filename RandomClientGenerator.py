@@ -1,9 +1,9 @@
-import re
-import xlsxwriter
-import xlrd
+from datetime import date
 import names
 import random
-from datetime import date
+import re
+import xlrd
+import xlsxwriter
 
 def sanitize_input(input_str):
     sanitized_str = re.sub(r'<script\b[^>]*>(.*?)</script>', '', input_str, flags=re.IGNORECASE)
@@ -12,49 +12,49 @@ def sanitize_input(input_str):
 workbook = xlrd.open_workbook('AddressData.xls')
 sheet = workbook.sheet_by_name('Sheet1')
 
-clientCountInput = input('How many clients are needed?\n')
+while True:
+    try:
+        clientCountInt = int(sanitize_input(input('How many clients are needed?\n')))
+    except ValueError:
+        print('Error: Value must be numeric.')
+        continue
+    break
 
-clientCount = sanitize_input(clientCountInput)
+userNameInput = sanitize_input(input('User requesting clients:\n'))
 
-clientCountInt = int(clientCount)
+todaysDate = date.today().strftime("%b-%d-%y")
 
-userNameInput = input('User requesting clients:\n')
-
-userName = sanitize_input(userNameInput)
-
-today = date.today()
-
-todaysDate = today.strftime("%b-%d-%y")
-
-workbook1 = xlsxwriter.Workbook(userName + ' Clients ' + todaysDate + '.xlsx')
+workbook1 = xlsxwriter.Workbook(userNameInput + ' Clients ' + todaysDate + '.xlsx')
 worksheet = workbook1.add_worksheet()
 
-row = 0
-col = 0
+def set_headers():
 
-worksheet.set_column(0, 5, 25)
+    row = 0
+    col = 0
 
-worksheet.write(row, col, 'First Name')
-worksheet.write(row, col + 1, 'Last Name')
-worksheet.write(row, col + 2, 'Address')
-worksheet.write(row, col + 3, 'City')
-worksheet.write(row, col + 4, 'Zip Code')
-worksheet.write(row, col + 5, 'State')
+    worksheet.set_column(0, 5, 25)
+
+    worksheet.write(row, col, 'First Name')
+    worksheet.write(row, col + 1, 'Last Name')
+    worksheet.write(row, col + 2, 'Address')
+    worksheet.write(row, col + 3, 'City')
+    worksheet.write(row, col + 4, 'Zip Code')
+    worksheet.write(row, col + 5, 'State')
+
+set_headers()
 
 row = 1
+col = 0
 
 for x in range(clientCountInt):
 
     randRow = random.randint(1, 10046)
     selectRow = int(randRow)
 
-    iterationValue = (x + 1)
-    
     add1 = sheet.cell(selectRow, 0).value
     city = sheet.cell(selectRow, 1).value
     zipCode = sheet.cell(selectRow, 2).value
     state = sheet.cell(selectRow, 3).value
-    
 
     clientFirst = names.get_first_name()
     clientLast = names.get_last_name()
@@ -68,6 +68,6 @@ for x in range(clientCountInt):
 
     row += 1
 
-print('The list has been genrated with ' + clientCount + ' clients.')
-
 workbook1.close()
+
+print('The list has been genrated with ' + str(clientCountInt) + ' clients.')
