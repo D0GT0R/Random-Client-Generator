@@ -56,7 +56,7 @@ col = 0
 ###---For Loop to populate the Excel file with clients---###
 for x in range(clientCountInt):
 
-    randRow = random.randint(1, 10046)
+    randRow = random.randint(1, 10000)
     selectRow = int(randRow)
 
     add1 = sheet.cell(selectRow, 0).value
