@@ -45,7 +45,7 @@ row = 1
 
 for x in range(clientCountInt):
 
-    randRow = random.randint(1, 2480)
+    randRow = random.randint(1, 10046)
     selectRow = int(randRow)
 
     iterationValue = (x + 1)
